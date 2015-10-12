@@ -1,10 +1,10 @@
-#ifndef interface
-#define interface
+#ifndef INTERFACE_H
+#define INTERFACE_H
 
-struct Music {
-    int length;
-    char notes[];
-    int beats[];
+struct Tune {
+    int count;
+    char* notes;
+    int beats[255];
     int tempo;
 };
 #endif

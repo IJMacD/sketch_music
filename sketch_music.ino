@@ -2,19 +2,8 @@
 //This following code plays happy birthday melody on Arduino
 //Put Piezo Buzzer on GDN and 9 (Positive and negative are reversible)
 //this project requires a Piezo Buzzer and
-
 // an Arduino board and
-
-//jumper wires to connect Buzzer's (+) to ~9 and (-) to GND (any GND)
-
-//HAVE FUN
-
-//this project requires a Piezo Buzzer and
-
-// an Arduino board and
-
 //jumper wires to connect Buzzer's (+) to ~4 and (-) to GND (any GND)
-
 //HAVE FUN
 
 #include "interface.h"
@@ -28,7 +17,7 @@ int potPort = 1;    // select the analog input port for the
 
 int val = 0;
 
-Music tune = saints;
+Tune myTune = saints;
 
 void playTone(int tone, int duration) {
 
@@ -86,25 +75,26 @@ pinMode(speakerPin, OUTPUT);
 
 void loop() {
 
-for (int i = 0; i < tune.length; i++) {
+for (int i = 0; i < myTune.count; i++) {
   
   val = analogRead(potPort);    // read the value from the sensor
 
-  tune.tempo = 50 + val / 5;
+  // flaot tempo = myTune.tempo
+  float tempo = 50 + val / 5;
 
-   if (tune.notes[i] == ' ') {
+   if (myTune.notes[i] == ' ') {
 
-     delay(tune.beats[i] * tune.tempo); // rest
+     delay(myTune.beats[i] * tempo); // rest
 
    } else {
 
-     playNote(tune.notes[i], tune.beats[i] * tune.tempo);
+     playNote(myTune.notes[i], myTune.beats[i] * tempo);
 
    }
 
    // pause between notes
 
-   delay(tune.tempo);
+   delay(tempo);
 
 }
 

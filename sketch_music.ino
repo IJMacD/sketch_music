@@ -6,7 +6,6 @@
 //jumper wires to connect Buzzer's (+) to ~4 and (-) to GND (any GND)
 //HAVE FUN
 
-#include "interface.h"
 #include "saints.h"
 
 int speakerPin = 1;
@@ -17,7 +16,11 @@ int potPort = 1;    // select the analog input port for the
 
 int val = 0;
 
-Tune myTune = saints;
+//Tune myTune = saints;
+int     tune_count = saints_count;
+char*   tune_notes = saints_notes;
+int*    tune_beats = saints_beats;
+int     tune_tempo = saints_tempo;
 
 void playTone(int tone, int duration) {
 
@@ -75,20 +78,20 @@ pinMode(speakerPin, OUTPUT);
 
 void loop() {
 
-for (int i = 0; i < myTune.count; i++) {
+for (int i = 0; i < tune_count; i++) {
   
   val = analogRead(potPort);    // read the value from the sensor
 
   // flaot tempo = myTune.tempo
   float tempo = 50 + val / 5;
 
-   if (myTune.notes[i] == ' ') {
+   if (tune_notes[i] == ' ') {
 
-     delay(myTune.beats[i] * tempo); // rest
+     delay(tune_beats[i] * tempo); // rest
 
    } else {
 
-     playNote(myTune.notes[i], myTune.beats[i] * tempo);
+     playNote(tune_notes[i], tune_beats[i] * tempo);
 
    }
 

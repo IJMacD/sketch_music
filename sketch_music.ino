@@ -8,98 +8,142 @@
 
 #include "saints.h"
 #include "twinkle.h"
+#include "birthday.h"
 
-int speakerPin = 1;
+const int TUNE_SAINTS = 0;
+const int TUNE_TWINKLE = 1;
+const int TUNE_BIRTHDAY = 2;
 
-int potPort = 1;    // select the analog input port for the 
-                    // potentiometer.
-                    // Note: not the same as pin number
+const int POT_MODE_TEMPO = 1;
+const int POT_MODE_PITCH = 2;
+
+const int speakerPin = 1;
+
+const int potPort = 1;    // select the analog input port for the
+                          // potentiometer.
+                          // Note: not the same as pin number
+
+int potMode = POT_MODE_TEMPO;
 
 int val = 0;
 
-//Tune myTune = saints;
-int     tune_count = twinkle_length;
-char*   tune_notes = twinkle_notes;
-int*    tune_beats = twinkle_beats;
-int     tune_tempo = twinkle_tempo;
+int     tune_count;
+char*   tune_notes;
+int*    tune_beats;
+int     tune_tempo;
+
+void setTune(int tuneIndex){
+  switch (tuneIndex) {
+    case TUNE_SAINTS:
+      tune_count = saints_count;
+      tune_notes = (char *)saints_notes;
+      tune_beats = (int *)saints_beats;
+      tune_tempo = saints_tempo;
+      break;
+    case TUNE_TWINKLE:
+      tune_count = twinkle_count;
+      tune_notes = (char *)twinkle_notes;
+      tune_beats = (int *)twinkle_beats;
+      tune_tempo = twinkle_tempo;
+      break;
+    case TUNE_BIRTHDAY:
+      tune_count = birthday_count;
+      tune_notes = (char *)birthday_notes;
+      tune_beats = (int *)birthday_beats;
+      tune_tempo = birthday_tempo;
+      break;
+  }
+}
 
 void playTone(int tone, int duration) {
 
-for (long i = 0; i < duration * 1000L; i += tone * 2) {
+  for (long i = 0; i < duration * 1000L; i += tone * 2) {
 
-   digitalWrite(speakerPin, HIGH);
+     digitalWrite(speakerPin, HIGH);
 
-   delayMicroseconds(tone);
+     delayMicroseconds(tone);
 
-   digitalWrite(speakerPin, LOW);
+     digitalWrite(speakerPin, LOW);
 
-   delayMicroseconds(tone);
+     delayMicroseconds(tone);
 
-}
+  }
 
 }
 
 void playNote(char note, int duration) {
 
-char names[] = {'C', 'D', 'E', 'F', 'G', 'A', 'B',           
+  const char names[] = {'C', 'D', 'E', 'F', 'G', 'A', 'B',
 
-                 'c', 'd', 'e', 'f', 'g', 'a', 'b',
+                   'c', 'd', 'e', 'f', 'g', 'a', 'b',
 
-                 'x', 'y' };
+                   'x', 'y' };
 
-int tones[] = { 1915, 1700, 1519, 1432, 1275, 1136, 1014,
+  const int tones[] = { 1915, 1700, 1519, 1432, 1275, 1136, 1014,
 
-                 956,  834,  765,  593,  468,  346,  224,
+                   956,  834,  765,  593,  468,  346,  224,
 
-                 655 , 715 };
+                   655 , 715 };
 
-int SPEE = 5;
+  const int SPEE = 5;
 
-// play the tone corresponding to the note name
+  // play the tone corresponding to the note name
 
-for (int i = 0; i < 17; i++) {
+  for (int i = 0; i < 17; i++) {
 
-   if (names[i] == note) {
-    int newduration = duration/SPEE;
-//    float pitchAdjust = 0.5 + (val / 250);
-//    float newPitch = tones[i] * pitchAdjust;
-     playTone(tones[i], newduration);
+     if (names[i] == note) {
+      int newDuration = duration/SPEE;
 
-   }
+      if(potMode == POT_MODE_PITCH){
+        float pitchAdjust = 0.5 + (val / 250);
+        float newPitch = tones[i] * pitchAdjust;
+        newDuration = (int) newPitch;
+      }
 
-}
+       playTone(tones[i], newDuration);
+
+     }
+
+  }
 
 }
 
 void setup() {
 
-pinMode(speakerPin, OUTPUT);
+  setTune(TUNE_SAINTS);
+
+  pinMode(speakerPin, OUTPUT);
 
 }
 
 void loop() {
 
-for (int i = 0; i < tune_count; i++) {
-  
-  val = analogRead(potPort);    // read the value from the sensor
+  for (int i = 0; i < tune_count; i++) {
 
-  // flaot tempo = myTune.tempo
-  float tempo = 50 + val / 5;
+    val = analogRead(potPort);    // read the value from the sensor
 
-   if (tune_notes[i] == ' ') {
+    float tempo;
 
-     delay(tune_beats[i] * tempo); // rest
+    if(potMode == POT_MODE_TEMPO){
+      tempo = 50 + val / 5;
+    } else {
+      tempo = tune_tempo;
+    }
 
-   } else {
+     if (tune_notes[i] == ' ') {
 
-     playNote(tune_notes[i], tune_beats[i] * tempo);
+       delay(tune_beats[i] * tempo); // rest
 
-   }
+     } else {
 
-   // pause between notes
+       playNote(tune_notes[i], tune_beats[i] * tempo);
 
-   delay(tempo);
+     }
 
-}
+     // pause between notes
+
+     delay(tempo);
+
+  }
 
 }

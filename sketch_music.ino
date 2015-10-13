@@ -9,23 +9,32 @@
 #include "saints.h"
 #include "twinkle.h"
 #include "birthday.h"
+#include "hot_cross.h"
 
 const int TUNE_SAINTS = 0;
 const int TUNE_TWINKLE = 1;
 const int TUNE_BIRTHDAY = 2;
+const int TUNE_HOT_CROSS = 3;
+
+const int TUNE_COUNT = 4;
 
 const int POT_MODE_TEMPO = 1;
 const int POT_MODE_PITCH = 2;
 
 const int speakerPin = 1;
 
+const int buttonPin = 3;
+
 const int potPort = 1;    // select the analog input port for the
                           // potentiometer.
                           // Note: not the same as pin number
+                          // port 1 == pin 2
 
 int potMode = POT_MODE_TEMPO;
 
 int val = 0;
+
+int currentTune = TUNE_SAINTS;
 
 int     tune_count;
 char*   tune_notes;
@@ -33,6 +42,7 @@ int*    tune_beats;
 int     tune_tempo;
 
 void setTune(int tuneIndex){
+
   switch (tuneIndex) {
     case TUNE_SAINTS:
       tune_count = saints_count;
@@ -52,7 +62,15 @@ void setTune(int tuneIndex){
       tune_beats = (int *)birthday_beats;
       tune_tempo = birthday_tempo;
       break;
+    case TUNE_HOT_CROSS:
+      tune_count = hot_cross_count;
+      tune_notes = (char *)hot_cross_notes;
+      tune_beats = (int *)hot_cross_beats;
+      tune_tempo = hot_cross_tempo;
+      break;
   }
+
+  currentTune = tuneIndex;
 }
 
 void playTone(int tone, int duration) {
@@ -121,6 +139,13 @@ void loop() {
   for (int i = 0; i < tune_count; i++) {
 
     val = analogRead(potPort);    // read the value from the sensor
+
+    int pressed = digitalRead(buttonPin);
+
+    if(pressed == HIGH){
+      setTune((currentTune + 1) % TUNE_COUNT);
+      i = 0;  // Go back to the start of the tune
+    }
 
     float tempo;
 

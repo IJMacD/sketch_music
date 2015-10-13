@@ -7,6 +7,7 @@
 //HAVE FUN
 
 #include "saints.h"
+#include "twinkle.h"
 
 int speakerPin = 1;
 
@@ -17,10 +18,10 @@ int potPort = 1;    // select the analog input port for the
 int val = 0;
 
 //Tune myTune = saints;
-int     tune_count = saints_count;
-char*   tune_notes = saints_notes;
-int*    tune_beats = saints_beats;
-int     tune_tempo = saints_tempo;
+int     tune_count = twinkle_length;
+char*   tune_notes = twinkle_notes;
+int*    tune_beats = twinkle_beats;
+int     tune_tempo = twinkle_tempo;
 
 void playTone(int tone, int duration) {
 

@@ -1,9 +1,7 @@
 #ifndef SAINTS_H
 #define SAINTS_H
 
-#include "interface.h"
-
-int saints_count = 11 + 12 + 9; // the number of notes
+int saints_length = 11 + 12 + 9; // the number of notes
 
 char saints_notes[] = "GBcdGBcdGBc" "dBGBABAGGBdd" "dcBcdBGAG";
 

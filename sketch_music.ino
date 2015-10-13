@@ -11,14 +11,16 @@
 #include "birthday.h"
 #include "hot_cross.h"
 #include "jingle.h"
+#include "under_sea.h"
 
 const int TUNE_SAINTS = 0;
 const int TUNE_TWINKLE = 1;
 const int TUNE_BIRTHDAY = 2;
 const int TUNE_HOT_CROSS = 3;
 const int TUNE_JINGLE = 4;
+const int TUNE_UNDER_SEA = 5;
 
-const int TUNE_COUNT = 5;
+const int TUNE_COUNT = 6;
 
 const int POT_MODE_TEMPO = 1;
 const int POT_MODE_PITCH = 2;
@@ -75,6 +77,12 @@ void setTune(int tuneIndex){
       tune_notes = (char *)jingle_notes;
       tune_beats = (int *)jingle_beats;
       tune_tempo = jingle_tempo;
+      break;
+    case TUNE_UNDER_SEA:
+      tune_count = under_sea_count;
+      tune_notes = (char *)under_sea_notes;
+      tune_beats = (int *)under_sea_beats;
+      tune_tempo = under_sea_tempo;
       break;
   }
 

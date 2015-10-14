@@ -40,53 +40,50 @@ int val = 0;
 
 int currentTune = TUNE_SAINTS;
 
-int     tune_count;
-char*   tune_notes;
-int*    tune_beats;
-int     tune_tempo;
+int    tune_count;
+char   tune_notes[128];
+int    tune_beats[128];
+int    tune_tempo;
 
 void setTune(int tuneIndex){
 
   switch (tuneIndex) {
     case TUNE_SAINTS:
-      tune_count = saints_count;
-      tune_notes = (char *)saints_notes;
-      tune_beats = (int *)saints_beats;
-      tune_tempo = saints_tempo;
+      copyTune(saints_count, saints_notes, saints_beats, saints_tempo);
       break;
     case TUNE_TWINKLE:
-      tune_count = twinkle_count;
-      tune_notes = (char *)twinkle_notes;
-      tune_beats = (int *)twinkle_beats;
-      tune_tempo = twinkle_tempo;
+      copyTune(twinkle_count, twinkle_notes, twinkle_beats, twinkle_tempo);
       break;
     case TUNE_BIRTHDAY:
-      tune_count = birthday_count;
-      tune_notes = (char *)birthday_notes;
-      tune_beats = (int *)birthday_beats;
-      tune_tempo = birthday_tempo;
+      copyTune(birthday_count, birthday_notes, birthday_beats, birthday_tempo);
       break;
     case TUNE_HOT_CROSS:
-      tune_count = hot_cross_count;
-      tune_notes = (char *)hot_cross_notes;
-      tune_beats = (int *)hot_cross_beats;
-      tune_tempo = hot_cross_tempo;
+      copyTune(hot_cross_count, hot_cross_notes, hot_cross_beats, hot_cross_tempo);
       break;
     case TUNE_JINGLE:
-      tune_count = jingle_count;
-      tune_notes = (char *)jingle_notes;
-      tune_beats = (int *)jingle_beats;
-      tune_tempo = jingle_tempo;
+      copyTune(jingle_count, jingle_notes, jingle_beats, jingle_tempo);
       break;
     case TUNE_UNDER_SEA:
-      tune_count = under_sea_count;
-      tune_notes = (char *)under_sea_notes;
-      tune_beats = (int *)under_sea_beats;
-      tune_tempo = under_sea_tempo;
+     copyTune(under_sea_count, under_sea_notes, under_sea_beats, under_sea_tempo);
       break;
   }
 
   currentTune = tuneIndex;
+}
+
+void copyTune(int count, const char *notes, const int *beats, int tempo){
+  int k;
+
+  tune_count = pgm_read_word(&count);
+
+  strcpy_P(tune_notes, (char *)pgm_read_byte(notes));
+
+  for (k = 0; k < tune_count; k++)
+  {
+    tune_beats[k] = pgm_read_word(beats + k);
+  }
+
+  tune_tempo = pgm_read_word(&tempo);
 }
 
 void playTone(int tone, int duration) {
